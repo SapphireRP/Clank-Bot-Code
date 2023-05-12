@@ -1,0 +1,2 @@
+TOKEN = "gapi_bWsGsjBEEbrHWEPfko2azlFJ7EPbCUzi6edJu4kJCEB+HzZ2m8A2jAwQLatv072OEZV7scuvBTXMgNJ8Cy/cPw=="
+PREFIX = "%"

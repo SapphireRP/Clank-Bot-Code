@@ -37,7 +37,7 @@ async def help(ctx):
                     "• Filter A Page Using The REACTIONS On This Message\n\n"
                     "• General - Enable\n"
                     "<📚 Commands>",
-        colour=0x99FF99,
+        color=0x64CC8C,
     )
     help_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: gg/Clank-Bot")
     await ctx.send(embed=help_embed)
@@ -66,7 +66,7 @@ class BugReport(commands.Cog):
             report_embed = Embed(
                 title="New Bug Report",
                 description=f"By **{ctx.author}:**\n`{bug_report}`",
-                color=0xFF0000,
+                color=0xFF9999,
             )
             report_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/not-found.png")
             report_embed.set_footer(text=f"Reported in #{ctx.channel.name}")
@@ -76,7 +76,7 @@ class BugReport(commands.Cog):
             error_embed = Embed(
                 title="An error occurred!",
                 description=f"An error occurred while trying to send your bug report: {e}",
-                color=0xFF0000
+                color=0xFF9999,
             )
             error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
             await ctx.reply(private=True, embed=error_embed)
@@ -96,7 +96,7 @@ async def on_command_error(ctx, error):
             error_embed = Embed(
                 title="An error occurred!",
                 description="An error occurred while trying to process your command",
-                color=0xFF0000
+                color=0xFF9999
             )
             error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
             await ctx.reply(private=True, embed=error_embed)
