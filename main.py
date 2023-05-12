@@ -1,22 +1,27 @@
+# Imports
 import guilded
-
 import config
-from guilded import Embed, message
 from guilded.ext import commands
+from guilded import Embed
 
-bot = commands.Bot(f"{config.PREFIX}")
+# Global Constants
 BugReportChannel = "50e7c931-a9bf-4029-a45a-5c0843e272ea"
 GUILD_ID = "NRgbbqvj"
+SuggestChannel = "ad12dc31-90e6-4440-b6cc-277cc5b9ffd1"
 
 
-@bot.remove_command('help')  # Remove the built-in help command
+# Bot Initialization
+bot = commands.Bot(f"{config.PREFIX}")
+bot.remove_command('help')  # Remove the built-in help command
 
+
+# Bot Commands
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong!')
 
 
-# Welcome Message
+# Event Handlers
 @bot.event
 async def on_member_join(member: guilded.Member):
     # Get the welcome channel
@@ -26,7 +31,8 @@ async def on_member_join(member: guilded.Member):
     await welcome_channel.send(f"Welcome to the guild, {member.mention}!")
 
 
-# Help command
+# Bot Commands
+# Help Command
 @bot.command()
 async def help(ctx):
     help_embed = Embed(
@@ -43,33 +49,34 @@ async def help(ctx):
     await ctx.send(embed=help_embed)
 
 
-# Define a new cog for bug reporting
+# Bug Report Command
+# Define a new cog for Bug Reporting
 class BugReport(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Create a new command for bug reporting
+    # Create a new command for Bug Reporting
     @commands.command()
     async def report(self, ctx, *, bug_report):
         guild = await bot.fetch_server(GUILD_ID)
         if guild is None:
-            await ctx.send("Sorry, I couldn't find the bug report guild.")
+            await ctx.send("Sorry, I couldn't find the Support Server.")
             return
 
         channel = await bot.fetch_channel(BugReportChannel)
         if channel is None:
-            await ctx.send("Sorry, I couldn't find the bug report channel.")
+            await ctx.send("Sorry, I couldn't find the Bug Report channel.")
             return
 
         try:
-            # Create an embed containing the bug report
+            # Create an embed containing the Bug Report
             report_embed = Embed(
                 title="New Bug Report",
                 description=f"By **{ctx.author}:**\n`{bug_report}`",
                 color=0xFF9999,
             )
             report_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/not-found.png")
-            report_embed.set_footer(text=f"Reported in #{ctx.channel.name}")
+            report_embed.set_footer(text=f"Reported in #{ctx.channel.name} by {ctx.author}")
             await channel.send(embed=report_embed)
             await ctx.send("Thank you for reporting the bug. We will look into it!")
         except Exception as e:
@@ -82,9 +89,51 @@ class BugReport(commands.Cog):
             await ctx.reply(private=True, embed=error_embed)
 
 
-# Add the bug reporting cog to the bot
+# Add the Bug Reporting cog to the bot
 bot.add_cog(BugReport(bot))
 
+# Suggest Command
+# Define a new cog for Suggestions
+class Suggestion(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    # Create a new command for Suggestions
+    @commands.command()
+    async def report(self, ctx, *, suggestion):
+        guild = await bot.fetch_server(GUILD_ID)
+        if guild is None:
+            await ctx.send("Sorry, I couldn't find the Support Server.")
+            return
+
+        channel = await bot.fetch_channel(SuggestChannel)
+        if channel is None:
+            await ctx.send("Sorry, I couldn't find the Suggestion channel.")
+            return
+
+        try:
+            # Create an embed containing the Suggestion
+            suggest_embed = Embed(
+                title="New Suggestion",
+                description=f"By **{ctx.author}:**\n`{suggestion}`",
+                color=0x7272BF,
+            )
+            suggest_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/TabEmptyStates/gil_forums.png")
+            suggest_embed.set_footer(text=f"Suggested in #{ctx.channel.name} by {ctx.author}")
+            await channel.send(embed=suggest_embed)
+            await ctx.send("Thank you for reporting the bug. We will look into it!")
+        except Exception as e:
+            error_embed = Embed(
+                title="An error occurred!",
+                description=f"An error occurred while trying to send your bug report: {e}",
+                color=0xFF9999,
+            )
+            error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
+            await ctx.reply(private=True, embed=error_embed)
+
+
+# Add the Suggestion cog to the bot
+bot.add_cog(Suggestion(bot))
 
 # Error Message
 @bot.event
@@ -95,7 +144,7 @@ async def on_command_error(ctx, error):
         try:
             error_embed = Embed(
                 title="An error occurred!",
-                description="An error occurred while trying to process your command",
+                description=f"An error occurred while trying to send your bug report: {e}",
                 color=0xFF9999
             )
             error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
@@ -104,7 +153,7 @@ async def on_command_error(ctx, error):
             print(error)
 
 
-# Statues
+# Status Update
 try:
     emoteid = 1851862  # use an id that in your server or is a global emoji
     content = 'Currently in development, please report bugs to gg/Clank-Bot'
@@ -128,6 +177,7 @@ except Exception as e:
     import traceback
 
     print(''.join(traceback.format_exception(e, e, e.__traceback__)))
+
 
 # Run the bot
 bot.run(f"{config.TOKEN}")
