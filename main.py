@@ -100,7 +100,7 @@ class Suggestion(commands.Cog):
 
     # Create a new command for Suggestions
     @commands.command()
-    async def report(self, ctx, *, suggestion):
+    async def suggest(self, ctx, *, suggestion):
         guild = await bot.fetch_server(GUILD_ID)
         if guild is None:
             await ctx.send("Sorry, I couldn't find the Support Server.")
