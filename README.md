@@ -36,11 +36,11 @@ Supporters:
 - Make a test bot via Guilded on your own private server to test your changes on.
 - Get its token.
 - Paste it into config.py.
-  ```If not found, make the file if it's not there already, and add:
-  python
-  TOKEN = "TOKEN_HERE"
-  PREFIX = "%"
-  ```
+If not found, make the file if it's not there already, and add:
+```python
+TOKEN = "TOKEN_HERE"
+PREFIX = "%"
+```
 
 - Run the bot with `python main.py`.
 
