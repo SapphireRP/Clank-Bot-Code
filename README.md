@@ -8,7 +8,7 @@
 **Clank Bot offers multiple features for servers, including moderation, logging, economy, and interaction commands, while prioritizing community satisfaction above all else.**
 
 **Here Are Some Plan Features For The Bot:**
-- **Moderation, AutoMod,Logging, and Presets**
+- **Moderation, AutoMod, Logging, and Presets**
 - **Profiles and XP System**
 - **Farming System**
 - **Anime and Manga Commands**
