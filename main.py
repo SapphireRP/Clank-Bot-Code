@@ -113,31 +113,6 @@ for foldername in os.listdir(cogs_path):
 async def ping(ctx):
     await ctx.send('pong!')
 
-# Status Update
-try:
-    emoteid = 1851862  # use an id that in your server or is a global emoji
-    content = 'Currently in development, please report bugs to gg/Clank-Bot'
-    botuserid = 'AQ1r1vgA'
-    token = f'{config.TOKEN}'
-
-    import requests;
-    from requests.structures import CaseInsensitiveDict
-
-    url = f"https://www.guilded.gg/api/v1/users/{botuserid}/status"
-
-    headers = CaseInsensitiveDict()
-    headers["Authorization"] = f"Bearer {token}"
-    headers["Accept"] = "application/json"
-    headers["Content-type"] = "application/json"
-
-    data = {"content": content, "emoteId": emoteid}
-
-    resp = requests.put(url, headers=headers, json=data)
-except Exception as e:
-    import traceback
-
-    print(''.join(traceback.format_exception(e, e, e.__traceback__)))
-
 
 # Run the bot
 bot.run(f"{config.TOKEN}")
