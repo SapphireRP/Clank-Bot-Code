@@ -69,10 +69,12 @@ class EventLogging(commands.Cog):
             await channel.send(embed=embed)
 
     # Joining System
-    @commands.command()
-    async def joined(ctx, member: guilded.Member):
-        if guilded.server.default_channel_id:
-            channel = guilded.server.default_channel or await guilded.server.fetch_default_channel()
+    @commands.Cog.listener()
+    async def on_member_join(self, event: guilded.MemberJoinEvent):
+        server = event.server
+        member = event.member
+        if server.default_channel_id:
+            channel = server.default_channel or await server.fetch_default_channel()
         else:
             return
         welcome_embed = guilded.Embed(
@@ -84,12 +86,11 @@ class EventLogging(commands.Cog):
 
     # Leaving System
     @commands.Cog.listener()
-    async def on_member_remove(event: guilded.MemberRemoveEvent):
-        if guilded.server.default_channel_id:
+    async def on_member_remove(self, event: guilded.MemberRemoveEvent):
+        if event.server.default_channel_id:
             channel = event.server.default_channel or await event.server.fetch_default_channel()
         else:
             return
-
         # Extra metadata
         if event.banned:
             cause = 'Was Banned From'
@@ -99,17 +100,16 @@ class EventLogging(commands.Cog):
             cause = 'Has Been Kicked From'
             title = 'Member Kicked'
             color = guilded.Color.red()
-        elif event.left:
+        else:
             cause = 'Has Left'
             title = 'Member Left'
-            color = guilded.Color.pink()
+            color = guilded.Color.teal()
         leaving_embed = guilded.Embed(
-            title=f"{title}",
-            description=f'<@{event.member.name}> {cause} the server.',
-            color =f"{color}",
+            title=title,
+            description=f'{event.member.mention} {cause} the server.',
+            color=color
         )
         await channel.send(embed=leaving_embed)
-
 
 def setup(bot):
     bot.add_cog(EventLogging(bot))
