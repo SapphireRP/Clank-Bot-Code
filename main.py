@@ -3,155 +3,115 @@ import guilded
 import config
 from guilded.ext import commands
 from guilded import Embed
+import os
+import requests
+from requests.structures import CaseInsensitiveDict
+import json
 
 # Global Constants
 BugReportChannel = "50e7c931-a9bf-4029-a45a-5c0843e272ea"
 GUILD_ID = "NRgbbqvj"
 SuggestChannel = "ad12dc31-90e6-4440-b6cc-277cc5b9ffd1"
 
+# Images
+CB_Members = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_members.png"
+CB_Recruitment = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_recruitment.png"
+CB_Overview = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_overview.png"
+CB_Forums = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_forums.png"
+CB_Calendar = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_calendar.png"
+CB_Docs = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_docs.png"
+CB_Media = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_media.png"
+CB_Streams = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_streams.png"
+CB_Matches = "https://img.guildedcdn.com/asset/TabEmptyStates/gil_matches.png"
+CB_Nothing_Here = "https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png"
+CB_Not_Found = "https://img.guildedcdn.com/asset/GenericMessages/not-found.png"
+CB_Gilmoji = "https://img.guildedcdn.com/asset/GenericMessages/gilmoji.png"
+CB_Denied = "https://img.guildedcdn.com/asset/GenericMessages/denied.png"
+CB_Stonks_Rising = "https://img.guildedcdn.com/asset/GenericMessages/stonks-rising.png"
+
+# Load the prefix data from prefixes.json file
+def load_prefixes():
+    try:
+        with open('prefixes.json', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return {}
+
+# Save the prefix data to prefixes.json file
+def save_prefixes(prefixes):
+    with open('prefixes.json', 'w') as file:
+        json.dump(prefixes, file)
+
+# Function to retrieve the prefix for a guild
+def get_prefix(bot, message):
+    prefixes = load_prefixes()
+    guild_prefix = prefixes.get(str(message.guild.id), '!')
+    return guild_prefix
 
 # Bot Initialization
-bot = commands.Bot(f"{config.PREFIX}")
-bot.remove_command('help')  # Remove the built-in help command
+bot = commands.Bot(f"{config.PREFIX}", help_command=None, experimental_event_style=True)
 
+# Bot Joined Server
+@bot.event
+async def on_bot_add(event: guilded.BotAddEvent, member: guilded.Member, guild: guilded.server):
+    bot_add_embed = Embed(
+        title = f"Thanks for adding me in {guilded.name}!", 
+        description = f"Hello {member.mention}, thanks for adding me to {guilded.name}, I am happy to assist you in anything! Start with %help to get to know more about me!",
+        color = 0x64CC8C,
+    )
+    bot_add_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: gg/Clank-Bot")
+    channel = await guild.fetch_default_channel()
+    await channel.send(embed=bot_add_embed)
+
+# Bot Left Server
+@bot.event
+async def on_bot_remove(guild):
+    prefixes = load_prefixes()
+    del prefixes[str(guild.id)]
+    save_prefixes(prefixes)
+
+# Bot Prefix Message
+@bot.event
+async def on_message(event: guilded.MessageEvent):
+    message = event.message
+    author = message.author
+    bot_author = author.bot
+    if not bot_author:
+        prefixes = load_prefixes()
+        guild_prefix = prefixes.get(str(message.guild.id), '!')
+        if not message.content.startswith(guild_prefix) and message.content.startswith('!'):
+            await message.channel.send(f"You used the default prefix. This server has updated its prefix. Please use the updated prefix `{guild_prefix}` instead.")
+    await bot.process_commands(message)
+
+# Set Prefix Command
+@bot.command()
+async def setprefix(ctx, prefix):
+    prefixes = load_prefixes()
+    prefixes[str(ctx.guild.id)] = prefix
+    save_prefixes(prefixes)
+    await ctx.send(f"The prefix for this server has been updated to `{prefix}`.")
+
+# Load extensions from each subfolder inside the Cogs folder
+cogs_path = os.path.join(os.getcwd(), "Cogs")
+for foldername in os.listdir(cogs_path):
+    folder_path = os.path.join(cogs_path, foldername)
+    if os.path.isdir(folder_path):
+        cogs_folder = 'Cogs'
+        for filename in os.listdir(folder_path):
+            if filename.endswith('.py'):
+                if foldername == '__pycache__':
+                    continue  # Skip any "__pycache__" folders if present
+                module = f'{cogs_folder}.{foldername}.{filename[:-3]}'  # Module name without the ".py" extension
+                try:
+                    bot.load_extension(module)
+                    print(f'Loaded extension: {module}')
+                except Exception as e:
+                    print(f'Failed to load extension: {module}\n{type(e).__name__}: {str(e)}')
 
 # Bot Commands
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong!')
-
-
-# Event Handlers
-@bot.event
-async def on_member_join(member: guilded.Member):
-    # Get the welcome channel
-    welcome_channel = guilded.Server.default_channel
-
-    # Send a welcome message
-    await welcome_channel.send(f"Welcome to the guild, {member.mention}!")
-
-
-# Bot Commands
-# Help Command
-@bot.command()
-async def help(ctx):
-    help_embed = Embed(
-        title="Welcome To Clank Bot",
-        description="Clank Bot offers multiple features for servers, including moderation, logging, economy, and interaction commands, while prioritizing community satisfaction above all else.\n\n"
-                    "<📚 Commands>\n\n"
-                    "**[optional] • <required>**\n\n"
-                    "• Filter A Page Using The REACTIONS On This Message\n\n"
-                    "• General - Enable\n"
-                    "<📚 Commands>",
-        color=0x64CC8C,
-    )
-    help_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: gg/Clank-Bot")
-    await ctx.send(embed=help_embed)
-
-
-# Bug Report Command
-# Define a new cog for Bug Reporting
-class BugReport(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # Create a new command for Bug Reporting
-    @commands.command()
-    async def report(self, ctx, *, bug_report):
-        guild = await bot.fetch_server(GUILD_ID)
-        if guild is None:
-            await ctx.send("Sorry, I couldn't find the Support Server.")
-            return
-
-        channel = await bot.fetch_channel(BugReportChannel)
-        if channel is None:
-            await ctx.send("Sorry, I couldn't find the Bug Report channel.")
-            return
-
-        try:
-            # Create an embed containing the Bug Report
-            report_embed = Embed(
-                title="New Bug Report",
-                description=f"By **{ctx.author}:**\n`{bug_report}`",
-                color=0xFF9999,
-            )
-            report_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/not-found.png")
-            report_embed.set_footer(text=f"Reported in #{ctx.channel.name} by {ctx.author}")
-            await channel.send(embed=report_embed)
-            await ctx.send("Thank you for reporting the bug. We will look into it!")
-        except Exception as e:
-            error_embed = Embed(
-                title="An error occurred!",
-                description=f"An error occurred while trying to send your bug report: {e}",
-                color=0xFF9999,
-            )
-            error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
-            await ctx.reply(private=True, embed=error_embed)
-
-
-# Add the Bug Reporting cog to the bot
-bot.add_cog(BugReport(bot))
-
-# Suggest Command
-# Define a new cog for Suggestions
-class Suggestion(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    # Create a new command for Suggestions
-    @commands.command()
-    async def suggest(self, ctx, *, suggestion):
-        guild = await bot.fetch_server(GUILD_ID)
-        if guild is None:
-            await ctx.send("Sorry, I couldn't find the Support Server.")
-            return
-
-        channel = await bot.fetch_channel(SuggestChannel)
-        if channel is None:
-            await ctx.send("Sorry, I couldn't find the Suggestion channel.")
-            return
-
-        try:
-            # Create an embed containing the Suggestion
-            suggest_embed = Embed(
-                title="New Suggestion",
-                description=f"By **{ctx.author}:**\n`{suggestion}`",
-                color=0x7272BF,
-            )
-            suggest_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/TabEmptyStates/gil_forums.png")
-            suggest_embed.set_footer(text=f"Suggested in #{ctx.channel.name} by {ctx.author}")
-            await channel.send(embed=suggest_embed)
-            await ctx.send("Thank you for reporting the bug. We will look into it!")
-        except Exception as e:
-            error_embed = Embed(
-                title="An error occurred!",
-                description=f"An error occurred while trying to send your bug report: {e}",
-                color=0xFF9999,
-            )
-            error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
-            await ctx.reply(private=True, embed=error_embed)
-
-
-# Add the Suggestion cog to the bot
-bot.add_cog(Suggestion(bot))
-
-# Error Message
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        return
-    else:
-        try:
-            error_embed = Embed(
-                title="An error occurred!",
-                description=f"An error occurred while trying to send your bug report: {e}",
-                color=0xFF9999
-            )
-            error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
-            await ctx.reply(private=True, embed=error_embed)
-        except:
-            print(error)
-
 
 # Status Update
 try:
