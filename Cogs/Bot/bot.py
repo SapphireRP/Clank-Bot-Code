@@ -43,15 +43,17 @@ class Bot(commands.Cog):
     async def help(self, ctx):
         help_embed = Embed(
             title="Welcome To Clank Bot",
-            description="Clank Bot offers multiple features for servers, including moderation, logging, economy, and interaction commands, while prioritizing community satisfaction above all else.\n\n"
-                        "<📚 Commands>\n\n"
-                        "**[optional] • <required>**\n\n"
-                        "• Filter A Page Using The REACTIONS On This Message\n\n"
-                        "• General - Enable\n"
-                        "<📚 Commands>",
+            description="Clank Bot offers multiple features for servers, including moderation, logging, economy, and interaction commands, while prioritizing community satisfaction above all else.\n\n",
             color=0x64CC8C,
         )
+        help_embed.add_field(name="Page 1:", value="`General Commands`", inline=True)
+        help_embed.add_field(name="Page 2:", value="`Moderation Commands`", inline=True)
+        help_embed.add_field(name="Page 3:", value="`Farming Commands`", inline=True)
+        help_embed.add_field(name="Page 4:", value="`Profile & XP Commands`", inline=True)
+        help_embed.add_field(name="Page 5:", value="`Misc Commands`", inline=True)
+        help_embed.add_field(name="Page 6:", value="`Developer Commands`", inline=True)
         help_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: gg/Clank-Bot")
+
         await ctx.send(embed=help_embed)
 	
     @commands.Cog.listener()
