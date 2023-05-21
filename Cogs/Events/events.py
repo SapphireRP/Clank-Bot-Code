@@ -1,5 +1,10 @@
 import guilded
 from guilded.ext import commands
+import asyncio
+import sqlite3
+import random
+
+log_channel_id = None  # Variable to store the log channel ID
 
 class EventLogging(commands.Cog):
     def __init__(self, bot):

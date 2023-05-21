@@ -1,6 +1,8 @@
 # Imports
 import guilded
 import config
+import sqlite3
+import random
 from guilded.ext import commands
 from guilded import Embed
 import os
