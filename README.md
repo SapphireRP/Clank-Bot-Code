@@ -21,7 +21,6 @@
 ## Contributors
 Clank's Dev Team:
 - SapphireRP
-- G4MN
 
 Moderation Team:
 
