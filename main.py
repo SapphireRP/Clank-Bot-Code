@@ -1,14 +1,9 @@
 # Imports
 import guilded
 import config
-import sqlite3
-import random
 from guilded.ext import commands
 from guilded import Embed
 import os
-import requests
-from requests.structures import CaseInsensitiveDict
-import json
 
 # Global Constants
 BugReportChannel = "50e7c931-a9bf-4029-a45a-5c0843e272ea"
@@ -31,26 +26,7 @@ CB_Gilmoji = "https://img.guildedcdn.com/asset/GenericMessages/gilmoji.png"
 CB_Denied = "https://img.guildedcdn.com/asset/GenericMessages/denied.png"
 CB_Stonks_Rising = "https://img.guildedcdn.com/asset/GenericMessages/stonks-rising.png"
 
-# Load the prefix data from prefixes.json file
-def load_prefixes():
-    try:
-        with open('prefixes.json', 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return {}
-
-# Save the prefix data to prefixes.json file
-def save_prefixes(prefixes):
-    with open('prefixes.json', 'w') as file:
-        json.dump(prefixes, file)
-
-# Function to retrieve the prefix for a guild
-def get_prefix(bot, message):
-    prefixes = load_prefixes()
-    guild_prefix = prefixes.get(str(message.guild.id), '!')
-    return guild_prefix
-
-# Bot Initialization
+# Initialize the Bot object with the default prefix
 bot = commands.Bot(f"{config.PREFIX}", help_command=None, experimental_event_style=True)
 
 # Bot Joined Server
@@ -64,34 +40,6 @@ async def on_bot_add(event: guilded.BotAddEvent, member: guilded.Member, guild: 
     bot_add_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: gg/Clank-Bot")
     channel = await guild.fetch_default_channel()
     await channel.send(embed=bot_add_embed)
-
-# Bot Left Server
-@bot.event
-async def on_bot_remove(guild):
-    prefixes = load_prefixes()
-    del prefixes[str(guild.id)]
-    save_prefixes(prefixes)
-
-# Bot Prefix Message
-@bot.event
-async def on_message(event: guilded.MessageEvent):
-    message = event.message
-    author = message.author
-    bot_author = author.bot
-    if not bot_author:
-        prefixes = load_prefixes()
-        guild_prefix = prefixes.get(str(message.guild.id), '!')
-        if not message.content.startswith(guild_prefix) and message.content.startswith('!'):
-            await message.channel.send(f"You used the default prefix. This server has updated its prefix. Please use the updated prefix `{guild_prefix}` instead.")
-    await bot.process_commands(message)
-
-# Set Prefix Command
-@bot.command()
-async def setprefix(ctx, prefix):
-    prefixes = load_prefixes()
-    prefixes[str(ctx.guild.id)] = prefix
-    save_prefixes(prefixes)
-    await ctx.send(f"The prefix for this server has been updated to `{prefix}`.")
 
 # Load extensions from each subfolder inside the Cogs folder
 cogs_path = os.path.join(os.getcwd(), "Cogs")
@@ -114,7 +62,6 @@ for foldername in os.listdir(cogs_path):
 @bot.command()
 async def ping(ctx):
     await ctx.send('pong!')
-
 
 # Run the bot
 bot.run(f"{config.TOKEN}")
