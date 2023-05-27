@@ -36,11 +36,20 @@ class Status(commands.Cog):
             error_embed.set_thumbnail(url="https://img.guildedcdn.com/asset/GenericMessages/nothing-here.png")
             await ctx.reply(embed=error_embed)
 
-    @commands.Cog.listener()
-    async def on_ready(self):
+    @commands.command()
+    async def status(self, ctx, *, status: str = None):
+        if ctx.author.id != 'dODKnlPm':  # replace with your user ID
+            await ctx.send("This command is only for the owner of the bot.")
+            return
+        if status is None:
+            status = "Currently in development, please report bugs to .gg/Sunk-Bar"
+        else:
+            prefix = ctx.prefix
+            status = status.replace(prefix + "status ", "")
+
         print(f'Logged in as {bot.user.name} ({bot.user.id})')
         emoteid = 1851862  # use an id that in your server or is a global emoji
-        content = 'Currently in development, please report bugs to gg/Clank-Bot'
+        content = f"{status}"  # use a status that in your server or is a global status"
         botuserid = 'AQ1r1vgA'
         token = f'{config.TOKEN}'
 
@@ -58,6 +67,8 @@ class Status(commands.Cog):
         except Exception as e:
             import traceback
             print(''.join(traceback.format_exception(e, e, e.__traceback__)))
+
+
 
 
 def setup(bot):

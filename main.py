@@ -4,6 +4,8 @@ import config
 from guilded.ext import commands
 from guilded import Embed
 import os
+import requests
+from requests.structures import CaseInsensitiveDict
 
 # Global Constants
 BugReportChannel = "50e7c931-a9bf-4029-a45a-5c0843e272ea"
@@ -27,8 +29,7 @@ CB_Denied = "https://img.guildedcdn.com/asset/GenericMessages/denied.png"
 CB_Stonks_Rising = "https://img.guildedcdn.com/asset/GenericMessages/stonks-rising.png"
 
 # Initialize the Bot object with the default prefix
-bot = commands.Bot(f"{config.PREFIX}", help_command=None, experimental_event_style=True)
-
+bot = commands.Bot(command_prefix=["C%", "c%"], help_command=None, experimental_event_style=True)
 # Bot Joined Server
 @bot.event
 async def on_bot_add(event: guilded.BotAddEvent, member: guilded.Member, guild: guilded.server):
@@ -37,7 +38,7 @@ async def on_bot_add(event: guilded.BotAddEvent, member: guilded.Member, guild: 
         description = f"Hello {member.mention}, thanks for adding me to {guilded.name}, I am happy to assist you in anything! Start with %help to get to know more about me!",
         color = 0x64CC8C,
     )
-    bot_add_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: gg/Clank-Bot")
+    bot_add_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: .gg/Sunk-Bar")
     channel = await guild.fetch_default_channel()
     await channel.send(embed=bot_add_embed)
 
@@ -61,7 +62,8 @@ for foldername in os.listdir(cogs_path):
 # Bot Commands
 @bot.command()
 async def ping(ctx):
-    await ctx.send('pong!')
+    latency = bot.latency
+    await ctx.send(f"My ping is `{round(latency * 1000)}ms`")
 
 # Run the bot
 bot.run(f"{config.TOKEN}")

@@ -6,24 +6,23 @@ class Help(commands.Cog):
         self.bot = bot
         
     @commands.command()
-    async def help(self, ctx, page: int = 1):
-        if page == 1:
+    async def help(self, ctx, page: int = 0):
+        if page == 0:
             help_embed = Embed(
-            title=":Clank_Logo: Welcome To Clank Bot",
-            description="Clank Bot offers multiple features for servers. Including moderation, logging, economy, and interaction commands. While prioritizing community satisfaction above all else.\n\n",
+            title="Help Menu",
             color=0x64CC8C,
             )
-            help_embed.add_field(name=":textchannel_CB: Page 2:", value="`General Commands`", inline=True)
-            help_embed.add_field(name=":certifiedmoderator_CB: Page 3:", value="`Moderation Commands`", inline=True)
-            help_embed.add_field(name=":library_CB: Page 4:", value="`Farming Commands`", inline=True)
-            help_embed.add_field(name=":shop_CB: Page 5:", value="`Profile & XP Commands`", inline=True)
-            help_embed.add_field(name=":settings_CB: Page 6:", value="`Developer Commands`", inline=True)
-            help_embed.set_footer(text="📄Page: 1/6, 👑Owner: SapphireRP 🆘Support: gg/Clank-Bot")
+            help_embed.add_field(name=":textchannel_CB: Page 1:", value="`General Commands`", inline=True)
+            help_embed.add_field(name=":certifiedmoderator_CB: Page 2:", value="`Moderation Commands`", inline=True)
+            help_embed.add_field(name=":library_CB: Page 3:", value="`Farming Commands`", inline=True)
+            help_embed.add_field(name=":shop_CB: Page 4:", value="`Profile & XP Commands`", inline=True)
+            help_embed.add_field(name=":settings_CB: Page 5:", value="`Developer Commands`", inline=True)
+            help_embed.set_footer(text="📄Page: 0/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
             await ctx.send(embed=help_embed)
             #message = await ctx.send(embed=help_embed)
             #await message.add_reaction("90002144")
             #await message.add_reaction("90002140")
-        elif page == 2:
+        elif page == 1:
             help_embed = Embed(
             title="[WIP] General Commands",
             color=0x64CC8C,
@@ -40,12 +39,12 @@ class Help(commands.Cog):
 
             help_embed.add_field(name="Premium", value="`WIP, Coming Soon`", inline=True)
 
-            help_embed.set_footer(text="📄Page: 2/6, 👑Owner: SapphireRP 🆘Support: gg/Clank-Bot")
+            help_embed.set_footer(text="📄Page: 1/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
             await ctx.send(embed=help_embed)
             #message = await ctx.send(embed=help_embed)
             #await message.add_reaction("90002144")
             #await message.add_reaction("90002140")
-        elif page == 3:
+        elif page == 2:
             help_embed = Embed(
             title="[WIP] Moderation Commands",
             color=0x64CC8C,
@@ -80,37 +79,37 @@ class Help(commands.Cog):
             help_embed.add_field(name="AddRole", value="`Add a role to a user`", inline=True)
             help_embed.add_field(name="RemoveRole", value="`Remove a role from a user`", inline=True)
 
-            help_embed.set_footer(text="📄Page: 3/6, 👑Owner: SapphireRP 🆘Support: gg/Clank-Bot")
+            help_embed.set_footer(text="📄Page: 2/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
+            await ctx.send(embed=help_embed)
+            #message = await ctx.send(embed=help_embed)
+            #await message.add_reaction("90002144")
+            #await message.add_reaction("90002140")
+        elif page == 3:
+            help_embed = Embed(
+            title="[WIP] Farming Commands",
+            color=0x64CC8C,
+            )
+            help_embed.set_footer(text="📄Page: 3/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
             await ctx.send(embed=help_embed)
             #message = await ctx.send(embed=help_embed)
             #await message.add_reaction("90002144")
             #await message.add_reaction("90002140")
         elif page == 4:
             help_embed = Embed(
-            title="[WIP] Farming Commands",
+            title="Profile & XP Commands",
             color=0x64CC8C,
             )
-            help_embed.set_footer(text="📄Page: 4/6, 👑Owner: SapphireRP 🆘Support: gg/Clank-Bot")
+            help_embed.set_footer(text="📄Page: 4/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
             await ctx.send(embed=help_embed)
             #message = await ctx.send(embed=help_embed)
             #await message.add_reaction("90002144")
             #await message.add_reaction("90002140")
         elif page == 5:
             help_embed = Embed(
-            title="Profile & XP Commands",
-            color=0x64CC8C,
-            )
-            help_embed.set_footer(text="📄Page: 5/6, 👑Owner: SapphireRP 🆘Support: gg/Clank-Bot")
-            await ctx.send(embed=help_embed)
-            #message = await ctx.send(embed=help_embed)
-            #await message.add_reaction("90002144")
-            #await message.add_reaction("90002140")
-        elif page == 6:
-            help_embed = Embed(
             title="[WIP] Developer Commands",
             color=0x64CC8C,
             )
-            help_embed.set_footer(text="📄Page: 6/6, 👑Owner: SapphireRP 🆘Support: gg/Clank-Bot")
+            help_embed.set_footer(text="📄Page: 5/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
             await ctx.send(embed=help_embed)
             #message = await ctx.send(embed=help_embed)
             #await message.add_reaction("90002144")
