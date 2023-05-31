@@ -38,7 +38,6 @@ Supporters:
 If not found, make the file if it's not there already, and add:
 ```python
 TOKEN = "TOKEN_HERE"
-PREFIX = "%"
 ```
 
 - Run the bot with `python main.py`.
