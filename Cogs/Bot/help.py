@@ -9,14 +9,15 @@ class Help(commands.Cog):
     async def help(self, ctx, page: int = 0):
         if page == 0:
             help_embed = Embed(
-            title="Help Menu",
+            title=":CS-slash-command: Help Menu",
+            description=f"Welcome To Clank's Help Menu!\n\n**[optional] • <required>**\n\n • Filter a page using {ctx.prefix}help 1",
             color=0x64CC8C,
             )
-            help_embed.add_field(name=":textchannel_CB: Page 1:", value="`General Commands`", inline=True)
-            help_embed.add_field(name=":certifiedmoderator_CB: Page 2:", value="`Moderation Commands`", inline=True)
-            help_embed.add_field(name=":library_CB: Page 3:", value="`Farming Commands`", inline=True)
-            help_embed.add_field(name=":shop_CB: Page 4:", value="`Profile & XP Commands`", inline=True)
-            help_embed.add_field(name=":settings_CB: Page 5:", value="`Developer Commands`", inline=True)
+            help_embed.add_field(name=":CS-information: Page 1:", value="`General Commands`", inline=True)
+            help_embed.add_field(name=":CS-moderator: Page 2:", value="`Moderation Commands`", inline=True)
+            help_embed.add_field(name=":CS-guide: Page 3:", value="`Farming Commands`", inline=True)
+            help_embed.add_field(name=":CS-card: Page 4:", value="`Profile & XP Commands`", inline=True)
+            help_embed.add_field(name=":CS-developer: Page 5:", value="`Developer Commands`", inline=True)
             help_embed.set_footer(text="📄Page: 0/5, 👑Owner: SapphireRP 🆘Support: .gg/Sunk-Bar")
             await ctx.send(embed=help_embed)
             #message = await ctx.send(embed=help_embed)

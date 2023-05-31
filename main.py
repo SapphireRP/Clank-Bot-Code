@@ -2,10 +2,13 @@
 import guilded
 import config
 from guilded.ext import commands
-from guilded import Embed
+from guilded import File, Embed
 import os
 import requests
 from requests.structures import CaseInsensitiveDict
+from easy_pil import Editor, load_image_async, Font
+import os
+import PIL
 
 # Global Constants
 BugReportChannel = "50e7c931-a9bf-4029-a45a-5c0843e272ea"
@@ -30,19 +33,70 @@ CB_Stonks_Rising = "https://img.guildedcdn.com/asset/GenericMessages/stonks-risi
 
 # Initialize the Bot object with the default prefix
 bot = commands.Bot(command_prefix=["C%", "c%"], help_command=None, experimental_event_style=True)
+
 # Bot Joined Server
 @bot.event
-async def on_bot_add(event: guilded.BotAddEvent, member: guilded.Member, guild: guilded.server):
+async def on_bot_add(bot):
+    server = bot.server
+    if server.default_channel_id:
+            channel = server.default_channel or await server.fetch_default_channel()
+    else:
+        return
     bot_add_embed = Embed(
-        title = f"Thanks for adding me in {guilded.name}!", 
-        description = f"Hello {member.mention}, thanks for adding me to {guilded.name}, I am happy to assist you in anything! Start with %help to get to know more about me!",
+        title = f"Thanks for adding me!", 
+        description = f"Thanks for adding me in {server.name}!, I am happy to assist you in anything! Start with %help to get to know more about me!",
         color = 0x64CC8C,
     )
     bot_add_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: .gg/Sunk-Bar")
-    channel = await guild.fetch_default_channel()
     await channel.send(embed=bot_add_embed)
 
-# Load extensions from each subfolder inside the Cogs folder
+
+# Ping Commands
+@bot.command()
+async def ping(ctx):
+    latency = bot.latency
+    latency_embed = Embed(
+        title = "Clank Bot's Ping",
+        description = f"My ping is `{round(latency * 1000)}ms`",
+        color = 0x64CC8C
+    )
+    latency_embed.set_footer(text="👑 Owner: SapphireRP 🆘 Support: .gg/Sunk-Bar")
+    await ctx.send(embed=latency_embed)
+
+# Status Commands
+@bot.command()
+async def status(ctx, *, status: str = None):
+        if ctx.author.id != 'dODKnlPm':  # replace with your user ID
+            await ctx.send("This command is only for the owner of the bot.")
+            return
+        if status is None:
+            status = "Currently in development, please report bugs to .gg/Sunk-Bar"
+        else:
+            prefix = ctx.prefix
+            status = status.replace(prefix + "status ", "")
+
+        print(f'Logged in as {bot.user.name} ({bot.user.id})')
+        emoteid = 1913999  # use an id that in your server or is a global emoji
+        content = f"{status}"  # use a status that in your server or is a global status"
+        botuserid = 'AQ1r1vgA'
+        token = f'{config.TOKEN}'
+
+        url = f"https://www.guilded.gg/api/v1/users/{botuserid}/status"
+
+        headers = CaseInsensitiveDict()
+        headers["Authorization"] = f"Bearer {token}"
+        headers["Accept"] = "application/json"
+        headers["Content-type"] = "application/json"
+
+        data = {"content": content, "emoteId": emoteid}
+
+        try:
+            resp = requests.put(url, headers=headers, json=data)
+        except Exception as e:
+            import traceback
+            print(''.join(traceback.format_exception(e, e, e.__traceback__)))
+
+# Cogs Loading
 cogs_path = os.path.join(os.getcwd(), "Cogs")
 for foldername in os.listdir(cogs_path):
     folder_path = os.path.join(cogs_path, foldername)
@@ -58,12 +112,6 @@ for foldername in os.listdir(cogs_path):
                     print(f'Loaded extension: {module}')
                 except Exception as e:
                     print(f'Failed to load extension: {module}\n{type(e).__name__}: {str(e)}')
-
-# Bot Commands
-@bot.command()
-async def ping(ctx):
-    latency = bot.latency
-    await ctx.send(f"My ping is `{round(latency * 1000)}ms`")
 
 # Run the bot
 bot.run(f"{config.TOKEN}")
